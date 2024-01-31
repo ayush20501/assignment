@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Marksheet Form</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+  </head>
+  <body>
+    <h2>Student Marksheet Form</h2>
+
+    <form id="marksheetForm" enctype="multipart/form-data">
+      {% csrf_token %} {{ marksheet_form.as_p }}
+      <input type="submit" value="Submit" />
+    </form>
+    <a href="{% url 'student_table' %}">
+      <button>View Data Table</button>
+    </a>
+
+    <script>
+      $(document).ready(function () {
+        $("#marksheetForm").submit(function (e) {
+          e.preventDefault();
+          $.ajax({
+            type: "POST",
+            url: '{% url "save_marksheet" %}',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              alert(response.message);
+              $("#marksheetForm")[0].reset();
+            },
+            error: function (response) {
+              alert("Error in form submission. Please try again.");
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
